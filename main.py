@@ -1,17 +1,28 @@
-WELCOME = "Добро пожаловать!"
+from pathlib import Path
 
-SECTIONS = {
-    "Главное": "Мы рады видеть вас на нашем сайте. Здесь вы найдете актуальную информацию о проекте и услугах.",
-    "Доставка": "Оформите заказ, и мы согласуем удобные дату, время и адрес доставки.",
-    "Отзывы": "Нам важно ваше мнение. Оставьте отзыв после получения заказа — это помогает нам становиться лучше.",
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+
+app = FastAPI(title="NSZ-STROYOVKA")
+
+CONTENT = {
+    "welcome": "Добро пожаловать!",
+    "главное": "Здесь вы найдете актуальную информацию о проекте и услугах.",
+    "доставка": "Оформите заказ, и мы согласуем удобные дату, время и адрес доставки.",
+    "отзывы": "Нам важно ваше мнение. Оставьте отзыв после получения заказа — это помогает нам становиться лучше.",
 }
 
 
-def show_information():
-    print(WELCOME)
-    for title, description in SECTIONS.items():
-        print(f"\n{title}\n{description}")
+@app.get("/", include_in_schema=False)
+def home() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("index.html"))
 
 
-if __name__ == "__main__":
-    show_information()
+@app.get("/api/content")
+def content() -> dict[str, str]:
+    return CONTENT
+
+
+@app.get("/health", include_in_schema=False)
+def health() -> dict[str, str]:
+    return {"status": "ok"}
