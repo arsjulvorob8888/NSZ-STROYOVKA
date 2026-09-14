@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: nsz-stroyovka-web
+    runtime: python
+    region: frankfurt
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
